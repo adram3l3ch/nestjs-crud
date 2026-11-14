@@ -57,7 +57,7 @@ export class PostsService {
   }
 
   update(id: number, updatePostDto: UpdatePostDto) {
-    let updatedPost: Post | undefined;
+    let updatedPost: Post;
 
     this.posts = this.posts.map((post) => {
       if (post.id !== id) return post;
@@ -65,21 +65,13 @@ export class PostsService {
       return updatedPost;
     });
 
-    if (!updatedPost) throw new NotFoundException(`No post with the ID ${id}`);
-
-    return updatedPost;
+    return updatedPost!;
   }
 
   remove(id: number) {
-    let postFound = false;
+    this.posts = this.posts.filter((post) => post.id !== id);
 
-    this.posts = this.posts.filter((post) => {
-      const isItPostToBeDeleted = post.id === id;
-      if (isItPostToBeDeleted) postFound = true;
-      return !isItPostToBeDeleted;
-    });
-
-    if (!postFound) throw new NotFoundException(`No post with the ID ${id}`);
+    // if (!postFound) throw new NotFoundException(`No post with the ID ${id}`); //? IGNORE --- since we are using the PostExistsPipe, this check is not necessary
 
     return 'Deleted successfully';
   }

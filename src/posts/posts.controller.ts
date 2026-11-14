@@ -13,6 +13,8 @@ import {
 } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto.js';
 import { UpdatePostDto } from './dto/update-post.dto.js';
+import type { Post as PostType } from './entities/post.entity.js';
+import { PostExistsPipe } from './pipes/post-exists.pipe.js';
 import { PostsService } from './posts.service.js';
 
 @Controller('posts')
@@ -38,15 +40,15 @@ export class PostsController {
 
   @Patch(':id')
   update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', ParseIntPipe, PostExistsPipe) post: PostType,
     @Body() updatePostDto: UpdatePostDto,
   ) {
-    return this.postsService.update(id, updatePostDto);
+    return this.postsService.update(post.id, updatePostDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.postsService.remove(+id);
+  remove(@Param('id', ParseIntPipe, PostExistsPipe) post: PostType) {
+    return this.postsService.remove(post.id);
   }
 }
