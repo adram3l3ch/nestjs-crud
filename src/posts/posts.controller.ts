@@ -20,6 +20,8 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Post()
+  // ? non global validation pipe
+  // @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   create(@Body() createPostDto: CreatePostDto) {
     return this.postsService.create(createPostDto);
   }
