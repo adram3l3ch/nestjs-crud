@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { CreatePostDto } from './dto/create-post.dto.js';
 import { UpdatePostDto } from './dto/update-post.dto.js';
 import { Post } from './entities/post.entity.js';
@@ -16,7 +16,7 @@ export class PostsService {
   }
 
   async findAll(search = '') {
-    return this.postRepository.find({ where: { title: search } });
+    return this.postRepository.find({ where: { title: Like(`%${search}%`) } });
   }
 
   async findOne(id: number) {
