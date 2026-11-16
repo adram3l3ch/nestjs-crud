@@ -1,78 +1,37 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreatePostDto } from './dto/create-post.dto.js';
 import { UpdatePostDto } from './dto/update-post.dto.js';
 import { Post } from './entities/post.entity.js';
 
 @Injectable()
 export class PostsService {
-  private posts: Post[] = [
-    {
-      authorName: 'adramelech',
-      content: 'this is a post',
-      createdAt: new Date(),
-      id: 1,
-      title: 'post title',
-    },
-    {
-      authorName: 'adramelech',
-      content: 'this is another post',
-      createdAt: new Date(),
-      id: 2,
-      title: 'another post title',
-    },
-    {
-      authorName: 'john doe',
-      content: "this is john doe's post",
-      createdAt: new Date(),
-      id: 3,
-      title: 'John doe post title',
-    },
-  ];
+  constructor(
+    @InjectRepository(Post) private readonly postRepository: Repository<Post>,
+  ) {}
 
-  create(createPostDto: CreatePostDto) {
-    const newPost = {
-      ...createPostDto,
-      createdAt: new Date(),
-      id: (this.posts.at(-1)?.id || 0) + 1,
-    };
-
-    this.posts.push(newPost);
-    return newPost;
+  async create(createPostDto: CreatePostDto): Promise<Post> {
+    return this.postRepository.save(createPostDto);
   }
 
-  findAll(search = '') {
-    const lowerCaseSearch = search.toLowerCase();
-
-    return this.posts.filter((post) =>
-      Object.values(post).some((v) =>
-        String(v).toLowerCase().includes(lowerCaseSearch),
-      ),
-    );
+  async findAll(search = '') {
+    return this.postRepository.find({ where: { title: search } });
   }
 
-  findOne(id: number) {
-    const post = this.posts.find((post) => post.id === id);
+  async findOne(id: number) {
+    const post = await this.postRepository.findOneBy({ id });
     if (!post) throw new NotFoundException(`No post with the ID ${id}`);
     return post;
   }
 
-  update(id: number, updatePostDto: UpdatePostDto) {
-    let updatedPost: Post;
-
-    this.posts = this.posts.map((post) => {
-      if (post.id !== id) return post;
-      updatedPost = { ...post, ...updatePostDto, updatedAt: new Date() };
-      return updatedPost;
-    });
-
-    return updatedPost!;
+  async update(id: number, updatePostDto: UpdatePostDto) {
+    await this.postRepository.update(id, updatePostDto);
+    return this.findOne(id);
   }
 
-  remove(id: number) {
-    this.posts = this.posts.filter((post) => post.id !== id);
-
-    // if (!postFound) throw new NotFoundException(`No post with the ID ${id}`); //? IGNORE --- since we are using the PostExistsPipe, this check is not necessary
-
-    return 'Deleted successfully';
+  async remove(id: number) {
+    await this.postRepository.delete(id);
+    return 'Deleted Successfully';
   }
 }
