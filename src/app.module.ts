@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module.js';
 import { User } from './auth/entities/user.entity.js';
 import { Post } from './posts/entities/post.entity.js';
 import { PostsModule } from './posts/posts.module.js';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { PostsModule } from './posts/posts.module.js';
       synchronize: true,
     }),
     ConfigModule.forRoot({ isGlobal: true }),
+    ThrottlerModule.forRoot([{ ttl: 6000, limit: 5 }]),
     PostsModule,
     AuthModule,
   ],

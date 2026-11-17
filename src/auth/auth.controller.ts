@@ -7,6 +7,7 @@ import { RegisterDto } from './dto/register.dto.js';
 import { User, UserRole } from './entities/user.entity.js';
 import { JwtAuthGuard } from './guards/jwt-auth.guard.js';
 import { RolesGuard } from './guards/roles.guard.js';
+import { LoginThrottlerGuard } from './guards/login-throttler.guard.js';
 
 @Controller('auth')
 export class AuthController {
@@ -17,6 +18,7 @@ export class AuthController {
     return this.authService.register(registerDto);
   }
 
+  @UseGuards(LoginThrottlerGuard)
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);

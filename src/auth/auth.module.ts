@@ -7,10 +7,11 @@ import { AuthService } from './auth.service.js';
 import { User } from './entities/user.entity.js';
 import { RolesGuard } from './guards/roles.guard.js';
 import { JwtStrategy } from './strategies/jwt.strategy.js';
+import { LoginThrottlerGuard } from './guards/login-throttler.guard.js';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, RolesGuard],
+  providers: [AuthService, JwtStrategy, RolesGuard, LoginThrottlerGuard],
   imports: [
     TypeOrmModule.forFeature([User]),
     JwtModule.register({}),
