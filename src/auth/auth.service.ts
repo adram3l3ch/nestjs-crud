@@ -1,6 +1,7 @@
 import {
   ConflictException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -10,11 +11,15 @@ import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { LoginDto } from './dto/login.dto.js';
 import { RegisterDto } from './dto/register.dto.js';
-import { User } from './entities/user.entity.js';
+import {
+  AccessTokenPayload,
+  RefreshTokenPayload,
+} from './entities/jwt.entity.js';
+import { User, UserRole } from './entities/user.entity.js';
 
 @Injectable()
 export class AuthService {
-  JWT_SECRET: string;
+  private JWT_SECRET: string;
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
@@ -23,7 +28,7 @@ export class AuthService {
     this.JWT_SECRET = configService.get('JWT_SECRET')!;
   }
 
-  async register(registerDto: RegisterDto) {
+  async register(registerDto: RegisterDto, role = UserRole.USER) {
     const existingUser = await this.userRepository.findOneBy({
       email: registerDto.email,
     });
@@ -36,6 +41,7 @@ export class AuthService {
 
     const newUser = this.userRepository.create({
       ...registerDto,
+      role,
       password: hashedPassword,
     });
 
@@ -66,6 +72,14 @@ export class AuthService {
     return { ...restUser, tokens };
   }
 
+  async getUserById(id: number) {
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) throw new NotFoundException('User not found');
+    const { password, ...restUser } = user;
+
+    return restUser;
+  }
+
   async refreshToken(refreshToken: string) {
     const user = await this.verifyToken(refreshToken);
     const accessToken = this.generateAccessToken(user);
@@ -89,7 +103,11 @@ export class AuthService {
   }
 
   private generateAccessToken(user: User) {
-    const payload = { email: user.email, sub: user.id, role: user.role };
+    const payload: AccessTokenPayload = {
+      email: user.email,
+      sub: user.id,
+      role: user.role,
+    };
 
     return this.jwtService.sign(payload, {
       secret: this.JWT_SECRET,
@@ -98,7 +116,7 @@ export class AuthService {
   }
 
   private generateRefreshToken(user: User) {
-    const payload = { sub: user.id };
+    const payload: RefreshTokenPayload = { sub: user.id };
 
     return this.jwtService.sign(payload, {
       secret: this.JWT_SECRET,

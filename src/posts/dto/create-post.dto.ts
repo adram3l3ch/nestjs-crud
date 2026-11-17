@@ -18,10 +18,4 @@ export class CreatePostDto {
   @MinLength(5, { message: 'Content must be at least 5 characters long' })
   @MaxLength(200, { message: 'Content must be at most 200 characters long' })
   content: string;
-
-  @IsNotEmpty({ message: 'Author name is required' })
-  @IsString({ message: 'Author name must be a string' })
-  @MinLength(2, { message: 'Author name must be at least 2 characters long' })
-  @MaxLength(50, { message: 'Author name must be at most 50 characters long' })
-  authorName: string;
 }
