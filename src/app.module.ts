@@ -8,6 +8,7 @@ import { User } from './auth/entities/user.entity.js';
 import { Post } from './posts/entities/post.entity.js';
 import { PostsModule } from './posts/posts.module.js';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
     }),
     ConfigModule.forRoot({ isGlobal: true }),
     ThrottlerModule.forRoot([{ ttl: 6000, limit: 5 }]),
+    CacheModule.register({ isGlobal: true, ttl: 30000, max: 100 }),
     PostsModule,
     AuthModule,
   ],

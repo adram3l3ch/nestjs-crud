@@ -22,6 +22,7 @@ import { PostExistsPipe } from './pipes/post-exists.pipe.js';
 import { PostsService } from './posts.service.js';
 import { RolesGuard } from '../auth/guards/roles.guard.js';
 import { Roles } from '../auth/decorators/roles.decorator.js';
+import { FindPostsQueryDto } from './dto/find-posts-query.dto.js';
 
 @Controller('posts')
 export class PostsController {
@@ -36,8 +37,8 @@ export class PostsController {
   }
 
   @Get()
-  findAll(@Query('search') search?: string) {
-    return this.postsService.findAll(search);
+  findAll(@Query() filters: FindPostsQueryDto) {
+    return this.postsService.findAll(filters);
   }
 
   @Get(':id')
