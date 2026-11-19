@@ -16,6 +16,7 @@ import {
   RefreshTokenPayload,
 } from './entities/jwt.entity.js';
 import { User, UserRole } from './entities/user.entity.js';
+import { EventsService } from '../events/events.service.js';
 
 @Injectable()
 export class AuthService {
@@ -23,7 +24,8 @@ export class AuthService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
+    private readonly eventService: EventsService,
+    configService: ConfigService,
   ) {
     this.JWT_SECRET = configService.get('JWT_SECRET')!;
   }
@@ -46,6 +48,9 @@ export class AuthService {
     });
 
     const { password, ...restUser } = await this.userRepository.save(newUser);
+
+    this.eventService.emitUserRegistration(newUser);
+
     return restUser;
   }
 

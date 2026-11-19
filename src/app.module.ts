@@ -11,6 +11,7 @@ import { File } from './file-upload/entities/file.entity.js';
 import { FileUploadModule } from './file-upload/file-upload.module.js';
 import { Post } from './posts/entities/post.entity.js';
 import { PostsModule } from './posts/posts.module.js';
+import { EventsModule } from './events/events.module.js';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { PostsModule } from './posts/posts.module.js';
     PostsModule,
     AuthModule,
     FileUploadModule,
+    EventsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
