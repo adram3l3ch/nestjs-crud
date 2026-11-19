@@ -1,0 +1,339 @@
+{
+   "info": {
+      "_postman_id": "619d23eb-5ee4-49c5-a57a-94f3c699e836",
+      "name": "NestJS",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+      "_exporter_id": "17822830"
+   },
+   "item": [
+      {
+         "name": "CRUD",
+         "item": [
+            {
+               "name": "posts",
+               "item": [
+                  {
+                     "name": "get posts",
+                     "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                           "raw": "{{URL}}/posts",
+                           "host": ["{{URL}}"],
+                           "path": ["posts"],
+                           "query": [
+                              {
+                                 "key": "search",
+                                 "value": "john",
+                                 "disabled": true
+                              }
+                           ]
+                        }
+                     },
+                     "response": []
+                  },
+                  {
+                     "name": "get post by id",
+                     "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                           "raw": "{{URL}}/posts/:id",
+                           "host": ["{{URL}}"],
+                           "path": ["posts", ":id"],
+                           "variable": [
+                              {
+                                 "key": "id",
+                                 "value": "8"
+                              }
+                           ]
+                        }
+                     },
+                     "response": []
+                  },
+                  {
+                     "name": "update post",
+                     "request": {
+                        "method": "PATCH",
+                        "header": [],
+                        "body": {
+                           "mode": "raw",
+                           "raw": "{\n    \"title\":\"Edited john doe title new 2\",\n    \"content\":\"content\"\n}",
+                           "options": {
+                              "raw": {
+                                 "language": "json"
+                              }
+                           }
+                        },
+                        "url": {
+                           "raw": "{{URL}}/posts/:id",
+                           "host": ["{{URL}}"],
+                           "path": ["posts", ":id"],
+                           "variable": [
+                              {
+                                 "key": "id",
+                                 "value": "5"
+                              }
+                           ]
+                        }
+                     },
+                     "response": []
+                  },
+                  {
+                     "name": "create post",
+                     "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                           "mode": "raw",
+                           "raw": "{\n    \"title\":\"New post\",\n    \"content\":\"This is newly created post\"\n}",
+                           "options": {
+                              "raw": {
+                                 "language": "json"
+                              }
+                           }
+                        },
+                        "url": {
+                           "raw": "{{URL}}/posts",
+                           "host": ["{{URL}}"],
+                           "path": ["posts"]
+                        }
+                     },
+                     "response": []
+                  },
+                  {
+                     "name": "delete post",
+                     "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                           "raw": "{{URL}}/posts/:id",
+                           "host": ["{{URL}}"],
+                           "path": ["posts", ":id"],
+                           "variable": [
+                              {
+                                 "key": "id",
+                                 "value": "6"
+                              }
+                           ]
+                        }
+                     },
+                     "response": []
+                  }
+               ]
+            },
+            {
+               "name": "auth",
+               "item": [
+                  {
+                     "name": "register",
+                     "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                           "mode": "raw",
+                           "raw": "{\n    \"email\":\"janedoe@example.com\",\n    \"password\":\"abcd@1234\",\n    \"name\":\"Jane Doe\"\n}",
+                           "options": {
+                              "raw": {
+                                 "language": "json"
+                              }
+                           }
+                        },
+                        "url": {
+                           "raw": "{{URL}}/auth/register",
+                           "host": ["{{URL}}"],
+                           "path": ["auth", "register"]
+                        }
+                     },
+                     "response": []
+                  },
+                  {
+                     "name": "login",
+                     "event": [
+                        {
+                           "listen": "test",
+                           "script": {
+                              "type": "text/javascript",
+                              "exec": [
+                                 "const jsonData = pm.response.json();\npm.collectionVariables.set(\"accessToken\", jsonData.tokens.accessToken);\npm.collectionVariables.set(\"refreshToken\", jsonData.tokens.refreshToken);"
+                              ]
+                           }
+                        }
+                     ],
+                     "request": {
+                        "auth": {
+                           "type": "bearer",
+                           "bearer": [
+                              {
+                                 "key": "token",
+                                 "value": "",
+                                 "type": "string"
+                              }
+                           ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                           "mode": "raw",
+                           "raw": "{\n    \"email\":\"admin@example.com\",\n    \"password\":\"admin@1234\"\n}",
+                           "options": {
+                              "raw": {
+                                 "language": "json"
+                              }
+                           }
+                        },
+                        "url": {
+                           "raw": "{{URL}}/auth/login",
+                           "host": ["{{URL}}"],
+                           "path": ["auth", "login"]
+                        }
+                     },
+                     "response": []
+                  },
+                  {
+                     "name": "refresh token",
+                     "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                           "mode": "raw",
+                           "raw": "{\n    \"refreshToken\":\"{{refreshToken}}\"\n}",
+                           "options": {
+                              "raw": {
+                                 "language": "json"
+                              }
+                           }
+                        },
+                        "url": {
+                           "raw": "{{URL}}/auth/refresh",
+                           "host": ["{{URL}}"],
+                           "path": ["auth", "refresh"]
+                        }
+                     },
+                     "response": []
+                  },
+                  {
+                     "name": "get profile",
+                     "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                           "raw": "{{URL}}/auth/profile",
+                           "host": ["{{URL}}"],
+                           "path": ["auth", "profile"]
+                        }
+                     },
+                     "response": []
+                  },
+                  {
+                     "name": "register admin",
+                     "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                           "mode": "raw",
+                           "raw": "{\n    \"email\":\"admin222@example.com\",\n    \"password\":\"admin@1234\",\n    \"name\":\"Admin\"\n}",
+                           "options": {
+                              "raw": {
+                                 "language": "json"
+                              }
+                           }
+                        },
+                        "url": {
+                           "raw": "{{URL}}/auth/register/admin",
+                           "host": ["{{URL}}"],
+                           "path": ["auth", "register", "admin"]
+                        }
+                     },
+                     "response": []
+                  }
+               ]
+            },
+            {
+               "name": "file upload",
+               "item": [
+                  {
+                     "name": "upload file",
+                     "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                           "mode": "formdata",
+                           "formdata": [
+                              {
+                                 "key": "file",
+                                 "type": "file",
+                                 "src": ["/home/adramelech/Desktop/Home/sarun-weds-akhila/public/images/og-cover.png"]
+                              }
+                           ]
+                        },
+                        "url": {
+                           "raw": "{{URL}}/file-upload",
+                           "host": ["{{URL}}"],
+                           "path": ["file-upload"]
+                        }
+                     },
+                     "response": []
+                  },
+                  {
+                     "name": "remove file",
+                     "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                           "raw": "{{URL}}/file-upload/:id",
+                           "host": ["{{URL}}"],
+                           "path": ["file-upload", ":id"],
+                           "variable": [
+                              {
+                                 "key": "id",
+                                 "value": "1"
+                              }
+                           ]
+                        }
+                     },
+                     "response": []
+                  },
+                  {
+                     "name": "get files",
+                     "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                           "raw": "{{URL}}/file-upload",
+                           "host": ["{{URL}}"],
+                           "path": ["file-upload"]
+                        }
+                     },
+                     "response": []
+                  }
+               ]
+            }
+         ]
+      }
+   ],
+   "auth": {
+      "type": "bearer",
+      "bearer": [
+         {
+            "key": "token",
+            "value": "{{accessToken}}",
+            "type": "string"
+         }
+      ]
+   },
+   "variable": [
+      {
+         "key": "URL",
+         "value": ""
+      },
+      {
+         "key": "accessToken",
+         "secret": true
+      },
+      {
+         "key": "refreshToken",
+         "secret": true
+      }
+   ]
+}
