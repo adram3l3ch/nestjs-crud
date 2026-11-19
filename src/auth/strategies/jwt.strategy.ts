@@ -9,7 +9,7 @@ import { AccessTokenPayload } from '../entities/jwt.entity.js';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private readonly authService: AuthService,
-    private readonly configService: ConfigService,
+    configService: ConfigService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
